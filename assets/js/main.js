@@ -16,7 +16,7 @@ var config = {
     // cleaning up the game
     // cleanup: cleanup
   },
-  phsycs: {
+  physics: {
     // type of engine to use
     default: 'arcade',
     arcade: {
@@ -48,21 +48,35 @@ function preload() {
 function create() {
   // by default phaser will render object by origin of the object, which is center
   // you cannot animate image
-  this.add.image(100,100, 'button1');
-  GamepadButton.setOrigin(0.5,0.5);
+  var button = this.add.image(100,100, 'button1');
+  button.setOrigin(0.5, 0.5);
 
   // sprites can animate
   this.add.sprite(300, 100, 'button1');
-  // position, image name, frame
-  this.add.image(300, 300, 'items', 1);
 
-  // to use physics in our game
-  this.physics.add.image(500, 100, 'button1');
+  // args(position, image name, frame)
+  this.chest = this.physics.add.image(300, 300, 'items', 0);
 
-  // add physics to character
+  // ADD PHYSICS TO WALL
+  this.wall = this.physics.add.image(500, 100, 'button1');
+  // it has velocity so when collided, it will move with the velocity
+  // MAKE WALL IMMOVABLE
+  this.wall.setImmovable();
+
+  // ADD PHYSICS TO PLAYER
   this.player = this.physics.add.image(32, 32, 'characters', 0);
   // zoom
   this.player.setScale(2);
+
+  // BOUNDARY
+  this.player.body.colliderWorldBounds = true;
+  // deprecated code
+  // this.player.body.setColliderWorldBounds(true);
+
+  // collide with wall
+  this.physics.add.collider(this.player, this.wall);
+  // overlap with chest
+  this.physics.add.overlap(this.player, this.chest, function() { console.log('overlap')});
 
   // phaser has keyboard manage
   this.cursors = this.input.keyboard.createCursorKeys();
@@ -73,18 +87,14 @@ function update() {
   this.player.setVelocity(0);
 
   if (this.cursors.left.isDown) {
-    console.log('left');
     this.player.setVelocityX(-160);
   } else if (this.cursors.right.isDown) {
-    console.log('right');
     this.player.setVelocityX(160);
   }
 
   if (this.cursors.up.isDown) {
-    console.log('up');
-    this.player.setVelocityY(160);
-  } else if (this.cursors.down.isDown) {
-    console.log('down');
     this.player.setVelocityY(-160);
+  } else if (this.cursors.down.isDown) {
+    this.player.setVelocityY(160);
   }
 }
