@@ -43,9 +43,13 @@ function preload() {
   // set frame, margin
   this.load.spritesheet('items', 'assets/images/items.png', { frameWidth: 32, frameHeight: 32});
   this.load.spritesheet('characters', 'assets/images/characters.png', { frameWidth: 32, frameHeight: 32 });
+  this.load.audio('goldSound', ['assets/audio/Pickup.wav']);
 }
 
 function create() {
+  // load audio (sound config: loop - false by default, volume, delay)
+  var goldPickupAudio = this.sound.add('goldSound', { loop: false, volume: 0.2 });
+  
   // by default phaser will render object by origin of the object, which is center
   // you cannot animate image
   var button = this.add.image(100,100, 'button1');
@@ -76,7 +80,12 @@ function create() {
   // collide with wall
   this.physics.add.collider(this.player, this.wall);
   // overlap with chest
-  this.physics.add.overlap(this.player, this.chest, function() { console.log('overlap')});
+  this.physics.add.overlap(this.player, this.chest, function(player, chest) { 
+    // play sound, play once by default
+    goldPickupAudio.play();
+    // destroy chest
+    chest.destroy();
+  });
 
   // phaser has keyboard manage
   this.cursors = this.input.keyboard.createCursorKeys();
