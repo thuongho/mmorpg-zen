@@ -4,8 +4,12 @@ class GameScene extends Phaser.Scene {
     super('Game');
   }
 
-  preload() {
-
+  init() {
+    // add coin over game scene
+    // launch instead of start
+    // launch is parallel, start is shut down the current
+    // rendering order is launch on top of current
+    this.scene.launch('Ui');
   }
 
   create() {
