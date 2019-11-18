@@ -10,6 +10,8 @@ class GameScene extends Phaser.Scene {
     // launch is parallel, start is shut down the current
     // rendering order is launch on top of current
     this.scene.launch('Ui');
+    // keep track of score
+    this.score = 0;
   }
 
   create() {
@@ -45,9 +47,25 @@ class GameScene extends Phaser.Scene {
   }
 
   createChest() {
+    // pass a group to an overlap and Phaser will check logic
+    // create chest group
+    this.chests = this.physics.add.group();
+    // carete chest positions array
+    this.chestPositions = [[100, 100], [200, 200], [300, 300], [400, 400], [500, 500]];
+    // specify the max number of chest we can have
+    this.maxNumberOfChests = 3;
+    // spawn a chest
+    for (let i = 0; i < this.maxNumberOfChests; i++) {
+      this.spawnChest();
+    }
+  }
+
+  spawnChest() {
+    const location = this.chestPositions[Math.floor(Math.random() * this.chestPositions.length)];
     // args(position, image name, frame)
     // this.chest = this.physics.add.image(300, 300, 'items', 0);
-    this.chest = new Chest(this, 300, 300, 'items', 0);
+    const chest = new Chest(this, location[0], location[1], 'items', 0);
+    this.chests.add(chest);
   }
 
   createWalls() {
@@ -67,16 +85,21 @@ class GameScene extends Phaser.Scene {
     // collide with wall
     this.physics.add.collider(this.player, this.wall);
     // overlap with chest
-    this.physics.add.overlap(this.player, this.chest, this.collectChest, null, this);
+    this.physics.add.overlap(this.player, this.chests, this.collectChest, null, this);
   }
 
   collectChest(player, chest) {
     // play sound, play once by default
     // play gold pick up sound
     this.goldPickupAudio.play();
+    // update score
+    this.score += chest.coins;
     // update score in the Ui
-    this.events.emit('updateScore', chest.coins);
+    this.events.emit('updateScore', this.score);
     // destroy chest
     chest.destroy();
+    // spawn new chest
+    // Phaser timer function to execute
+    this.time.delayedCall(1000, this.spawnChest, [], this);
   } 
 }
