@@ -11,4 +11,18 @@ class Chest extends Phaser.Physics.Arcade.Image {
     // add player to existing scene
     this.scene.add.existing(this);
   }
+
+  makeActive() {
+    this.setActive(true);
+    this.setVisible(true);
+    this.body.checkCollision.none = false;
+  }
+
+  makeInActive() {
+    this.setActive(false);
+    this.setVisible(false);
+    // pick up the game object, collider will still be on the screen
+    // setting to true, will make phaser not check for collisions
+    this.body.checkCollision.none = true;
+  }
 }

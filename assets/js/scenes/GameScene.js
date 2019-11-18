@@ -62,10 +62,22 @@ class GameScene extends Phaser.Scene {
 
   spawnChest() {
     const location = this.chestPositions[Math.floor(Math.random() * this.chestPositions.length)];
-    // args(position, image name, frame)
-    // this.chest = this.physics.add.image(300, 300, 'items', 0);
-    const chest = new Chest(this, location[0], location[1], 'items', 0);
-    this.chests.add(chest);
+    
+    // Phaser will loop through chest array and look for inactive object
+    // return the inactive game object
+    // reuse game object
+    let chest = this.chests.getFirstDead();
+    console.log('chest', chest);
+    if (!chest) {
+      // args(position, image name, frame)
+      // this.chest = this.physics.add.image(300, 300, 'items', 0);
+      const chest = new Chest(this, location[0], location[1], 'items', 0);
+      this.chests.add(chest);
+    } else {
+      chest.setPosition(location[0], location[1]);
+      chest.makeActive();
+    }
+    
   }
 
   createWalls() {
@@ -84,7 +96,7 @@ class GameScene extends Phaser.Scene {
   addCollisions() {
     // collide with wall
     this.physics.add.collider(this.player, this.wall);
-    // overlap with chest
+    // overlap with chest / chest group
     this.physics.add.overlap(this.player, this.chests, this.collectChest, null, this);
   }
 
@@ -97,7 +109,9 @@ class GameScene extends Phaser.Scene {
     // update score in the Ui
     this.events.emit('updateScore', this.score);
     // destroy chest
-    chest.destroy();
+    // chest.destroy();
+    // make chest inactive
+    chest.makeInActive();
     // spawn new chest
     // Phaser timer function to execute
     this.time.delayedCall(1000, this.spawnChest, [], this);
