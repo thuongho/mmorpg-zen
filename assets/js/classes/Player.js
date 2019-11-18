@@ -2,6 +2,7 @@ class Player extends Phaser.Physics.Arcade.Image {
   constructor(scene, x, y, frame) {
     super(scene, x, y, frame);
     this.scene = scene;
+    // velocity when moving our player
     this.velocity = 160;
 
     // enable physics
