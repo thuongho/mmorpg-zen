@@ -15,9 +15,9 @@ class GameScene extends Phaser.Scene {
   }
 
   create() {
+    this.createMap();
     this.createAudio();
     this.createChest();
-    this.createWalls();
     this.createPlayer();
     this.addCollisions();
     this.createInput();
@@ -80,13 +80,13 @@ class GameScene extends Phaser.Scene {
     
   }
 
-  createWalls() {
-    // ADD PHYSICS TO WALL
-    this.wall = this.physics.add.image(500, 100, 'button1');
-    // it has velocity so when collided, it will move with the velocity
-    // MAKE WALL IMMOVABLE
-    this.wall.setImmovable();
-  }
+  // createWalls() {
+  //   // ADD PHYSICS TO WALL
+  //   this.wall = this.physics.add.image(500, 100, 'button1');
+  //   // it has velocity so when collided, it will move with the velocity
+  //   // MAKE WALL IMMOVABLE
+  //   this.wall.setImmovable();
+  // }
 
   createInput() {
     // phaser has keyboard manage
@@ -115,5 +115,21 @@ class GameScene extends Phaser.Scene {
     // spawn new chest
     // Phaser timer function to execute
     this.time.delayedCall(1000, this.spawnChest, [], this);
-  } 
+  }
+
+  createMap() {
+    // create the tile map
+    this.map = this.make.tilemap({ key: 'map' });
+    // add the tileset image to our map
+    // params: has to match image in bootscene, key, size, margin, space
+    this.tiles = this.map.addTilesetImage('background', 'background', 32, 32, 1, 2)
+    // create our background
+    // params: key, tiles, starting x, y
+    this.backgroundLayer = this.map.createStaticLayer('background', this.tiles, 0, 0);
+    // scale the layer to the size of player
+    this.backgroundLayer.setScale(2);
+    // create block layer
+    this.blockedLayer = this.map.createStaticLayer('blocked', this.tiles, 0, 0);
+    this.blockedLayer.setScale(2);
+  }
 }
