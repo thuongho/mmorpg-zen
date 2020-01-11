@@ -67,7 +67,7 @@ class GameScene extends Phaser.Scene {
     // return the inactive game object
     // reuse game object
     let chest = this.chests.getFirstDead();
-    console.log('chest', chest);
+    // console.log('chest', chest);
     if (!chest) {
       // args(position, image name, frame)
       // this.chest = this.physics.add.image(300, 300, 'items', 0);
@@ -131,5 +131,14 @@ class GameScene extends Phaser.Scene {
     // create block layer
     this.blockedLayer = this.map.createStaticLayer('blocked', this.tiles, 0, 0);
     this.blockedLayer.setScale(2);
+
+    // update the world bounds
+    // default is bound of canvas
+    this.physics.world.bounds.width = this.map.widthInPixles * 2;
+    this.physics.world.bounds.height = this.map.heightInPixles * 2;
+
+    // limit camera to size of map
+    // remove black area as phaser is infinite in each direction
+    this.cameras.main.setBounds(0, 0, this.map.widthInPixles * 2, this.map.heightInPixles * 2);
   }
 }
