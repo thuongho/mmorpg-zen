@@ -36,7 +36,8 @@ class GameScene extends Phaser.Scene {
   createPlayer() {
     // ADD PHYSICS TO PLAYER
     // this.player = this.physics.add.image(32, 32, 'characters', 0);
-    this.player = new Player(this, 32, 32, 'characters', 0);
+    // set player inside the non blocked layer of the map
+    this.player = new Player(this, 224, 224, 'characters', 0);
     // zoom
     this.player.setScale(2);
   
@@ -94,8 +95,8 @@ class GameScene extends Phaser.Scene {
   }
 
   addCollisions() {
-    // collide with wall
-    this.physics.add.collider(this.player, this.wall);
+    // collide with blocked layer
+    this.physics.add.collider(this.player, this.blockedLayer);
     // overlap with chest / chest group
     this.physics.add.overlap(this.player, this.chests, this.collectChest, null, this);
   }
@@ -128,9 +129,13 @@ class GameScene extends Phaser.Scene {
     this.backgroundLayer = this.map.createStaticLayer('background', this.tiles, 0, 0);
     // scale the layer to the size of player
     this.backgroundLayer.setScale(2);
+
     // create block layer
     this.blockedLayer = this.map.createStaticLayer('blocked', this.tiles, 0, 0);
     this.blockedLayer.setScale(2);
+    // setCollisionByExclusion takes array of tile indexes that game objects can collide with
+    // set array to -1 and phaser will check for collisions of all tiles in layer
+    this.blockedLayer.setCollisionByExclusion([-1]);
 
     // update the world bounds
     // default is bound of canvas

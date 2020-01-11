@@ -32,7 +32,11 @@ var config = {
         y: 0
       }
     }
-  }
+  },
+  //lets phaser know we are using pixelart so that it gives better quality, less grainy
+  pixelArt: true,
+  // render sprites cleanly by rounding the position when moving
+  roundPixels: true
 };
 
 // scene can be one or multiple
