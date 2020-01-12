@@ -26,7 +26,7 @@ class Spawner {
   spawnObject() {
     console.log('spawning object...');
     // create monster or chest
-    if (this.objectType === 'CHEST') {
+    if (this.objectType === SpawnerType.CHEST) {
       this.spawnChest();
     }
   }
@@ -34,7 +34,7 @@ class Spawner {
   spawnChest() {
     // pick random location
     const location = this.pickRandomLocation();
-    const chest = new ChestModel(location[0], location[1], 10, this.id);
+    const chest = new ChestModel(location[0], location[1], randomNumber(10, 20), this.id);
     this.objectsCreated.push(chest);
     // call addObject so that game manager can update object list
     this.addObject(chest.id, chest);
@@ -56,7 +56,10 @@ class Spawner {
     return location;
   }
 
-  removeObject() {
+  removeObject(id) {
     // clean up picked up objects
+    // go through objects created and delete a particular id
+    this.objectsCreated = this.objectsCreated.filter((obj) => obj.id !== id);
+    this.deleteObject(id);
   }
 }

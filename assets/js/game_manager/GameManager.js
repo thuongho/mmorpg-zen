@@ -22,7 +22,6 @@ class GameManager {
 
   parseMapData() {
     // parse map data from tiles
-    console.log('this.mapData', this.mapData);
     this.mapData.forEach((layer) => {
       if (layer.name === 'player_locations') {
         // only care about the x y coords
@@ -57,7 +56,7 @@ class GameManager {
       const config = {
         spawnInterval: 3000,
         limit: 3,
-        spawnerType: 'CHEST',
+        spawnerType: SpawnerType.CHEST,
         id: `chest-${key}`
       };
 
@@ -78,10 +77,11 @@ class GameManager {
     this.scene.events.emit('spawnPlayer', location);
   }
 
-  addChest(id, chest) {
-    this.chests[id] = chest;
-    console.log('chest', chest);
+  addChest(chestId, chest) {
+    this.chests[chestId] = chest;
   }
 
-  deleteChest() {}
+  deleteChest(chestId) {
+    delete this.chests[chestId];
+  }
 }
