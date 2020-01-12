@@ -17,7 +17,7 @@ class GameScene extends Phaser.Scene {
   create() {
     this.createMap();
     this.createAudio();
-    this.createChest();
+    this.createGroup();
     
     this.createInput();
 
@@ -50,22 +50,14 @@ class GameScene extends Phaser.Scene {
     // this.player.body.setColliderWorldBounds(true);
   }
 
-  createChest() {
+  createGroup() {
     // pass a group to an overlap and Phaser will check logic
     // create chest group
     this.chests = this.physics.add.group();
-    // carete chest positions array
-    this.chestPositions = [[100, 100], [200, 200], [300, 300], [400, 400], [500, 500]];
-    // specify the max number of chest we can have
-    this.maxNumberOfChests = 3;
-    // spawn a chest
-    for (let i = 0; i < this.maxNumberOfChests; i++) {
-      this.spawnChest();
-    }
   }
 
-  spawnChest() {
-    const location = this.chestPositions[Math.floor(Math.random() * this.chestPositions.length)];
+  spawnChest(chestObject) {
+    const location = [chestObject.x * 2, chestObject.y * 2];
     
     // Phaser will loop through chest array and look for inactive object
     // return the inactive game object
@@ -75,9 +67,11 @@ class GameScene extends Phaser.Scene {
     if (!chest) {
       // args(position, image name, frame)
       // this.chest = this.physics.add.image(300, 300, 'items', 0);
-      const chest = new Chest(this, 224, 224, 'items', 0);
+      chest = new Chest(this, location[0], location[1], 'items', 0, chestObject.gold, chestObject.id);
       this.chests.add(chest);
     } else {
+      chest.coins = chestObject.gold;
+      chest.id = chestObject.id;
       chest.setPosition(location[0], location[1]);
       chest.makeActive();
     }
@@ -118,7 +112,9 @@ class GameScene extends Phaser.Scene {
     chest.makeInActive();
     // spawn new chest
     // Phaser timer function to execute
-    this.time.delayedCall(1000, this.spawnChest, [], this);
+    // this.time.delayedCall(1000, this.spawnChest, [], this);
+    // update game manager
+    this.events.emit('pickUpChest', chest.id);
   }
 
   createMap() {
@@ -131,6 +127,10 @@ class GameScene extends Phaser.Scene {
     this.events.on('spawnPlayer', (location) => {
       this.createPlayer(location);
       this.addCollisions();
+    });
+
+    this.events.on('chestSpawned', (chest) => {
+      this.spawnChest(chest);
     });
 
     // objects are the objects layers in the tile
