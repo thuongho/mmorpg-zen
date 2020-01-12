@@ -28,6 +28,8 @@ class Spawner {
     // create monster or chest
     if (this.objectType === SpawnerType.CHEST) {
       this.spawnChest();
+    } else if (this.objectType === SpawnerType.MONSTER) {
+      this.spawnMonster();
     }
   }
 
@@ -38,6 +40,20 @@ class Spawner {
     this.objectsCreated.push(chest);
     // call addObject so that game manager can update object list
     this.addObject(chest.id, chest);
+  }
+
+  spawnMonster() {
+    const location = this.pickRandomLocation();
+    const monster = new MonsterModel(
+      location[0],
+      location[1],
+      randomNumber(20, 50),
+      this.id,
+      randomNumber(5, 20),
+      randomNumber(3, 10)
+    );
+    this.objectsCreated.push(monster);
+    this.addObject(monster.id, monster);
   }
 
   pickRandomLocation() {

@@ -40,7 +40,7 @@ class GameScene extends Phaser.Scene {
     // ADD PHYSICS TO PLAYER
     // this.player = this.physics.add.image(32, 32, 'characters', 0);
     // set player inside the non blocked layer of the map
-    this.player = new Player(this, location[0], location[1], 'characters', 0);
+    this.player = new Player(this, location[0] * 2, location[1] * 2, 'characters', 0);
     // zoom
     this.player.setScale(2);
   
@@ -67,7 +67,7 @@ class GameScene extends Phaser.Scene {
     if (!chest) {
       // args(position, image name, frame)
       // this.chest = this.physics.add.image(300, 300, 'items', 0);
-      chest = new Chest(this, location[0], location[1], 'items', 0, chestObject.gold, chestObject.id);
+      chest = new Chest(this, location[0], location[1], 'items', chestObject.gold, chestObject.id);
       this.chests.add(chest);
     } else {
       chest.coins = chestObject.gold;
@@ -76,6 +76,11 @@ class GameScene extends Phaser.Scene {
       chest.makeActive();
     }
     
+  }
+
+  spawnMonster(monster) {
+    // TODO: create monster
+    console.log('monster', monster);
   }
 
   // createWalls() {
@@ -99,6 +104,7 @@ class GameScene extends Phaser.Scene {
   }
 
   collectChest(player, chest) {
+    console.log('collect chest', chest);
     // play sound, play once by default
     // play gold pick up sound
     this.goldPickupAudio.play();
@@ -132,6 +138,10 @@ class GameScene extends Phaser.Scene {
     this.events.on('chestSpawned', (chest) => {
       this.spawnChest(chest);
     });
+
+    this.events.on('monsterSpawned', (monster) => {
+      this.spawnMonster(monster);
+    })
 
     // objects are the objects layers in the tile
     this.gameManager = new GameManager(this, this.map.map.objects);
