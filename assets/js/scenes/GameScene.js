@@ -18,14 +18,17 @@ class GameScene extends Phaser.Scene {
     this.createMap();
     this.createAudio();
     this.createChest();
-    this.createPlayer();
-    this.addCollisions();
+    
     this.createInput();
+
+    this.createGameManager();
   }
 
   update() {
-    // pass cursor into player's update
-    this.player.update(this.cursors);
+    if (this.player) {
+      // pass cursor into player's update
+      this.player.update(this.cursors);
+    }
   }
 
   createAudio() {
@@ -33,11 +36,11 @@ class GameScene extends Phaser.Scene {
     this.goldPickupAudio = this.sound.add('goldSound', { loop: false, volume: 0.2 });
   }
 
-  createPlayer() {
+  createPlayer(location) {
     // ADD PHYSICS TO PLAYER
     // this.player = this.physics.add.image(32, 32, 'characters', 0);
     // set player inside the non blocked layer of the map
-    this.player = new Player(this, 224, 224, 'characters', 0);
+    this.player = new Player(this, location[0], location[1], 'characters', 0);
     // zoom
     this.player.setScale(2);
   
@@ -72,7 +75,7 @@ class GameScene extends Phaser.Scene {
     if (!chest) {
       // args(position, image name, frame)
       // this.chest = this.physics.add.image(300, 300, 'items', 0);
-      const chest = new Chest(this, location[0], location[1], 'items', 0);
+      const chest = new Chest(this, 224, 224, 'items', 0);
       this.chests.add(chest);
     } else {
       chest.setPosition(location[0], location[1]);
@@ -121,5 +124,17 @@ class GameScene extends Phaser.Scene {
   createMap() {
     // CREATE MAP
     this.map = new Map(this, 'map', 'background', 'background', 'blocked');
+  }
+
+  createGameManager() {
+    // listen for player spawn from the game manager
+    this.events.on('spawnPlayer', (location) => {
+      this.createPlayer(location);
+      this.addCollisions();
+    });
+
+    // objects are the objects layers in the tile
+    this.gameManager = new GameManager(this, this.map.map.objects);
+    this.gameManager.setup();
   }
 }
