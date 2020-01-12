@@ -49,6 +49,7 @@ class Spawner {
       location[1],
       randomNumber(20, 50),
       this.id,
+      randomNumber(0, 20),
       randomNumber(5, 20),
       randomNumber(3, 10)
     );

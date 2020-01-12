@@ -54,11 +54,13 @@ class GameScene extends Phaser.Scene {
     // pass a group to an overlap and Phaser will check logic
     // create chest group
     this.chests = this.physics.add.group();
+
+    // create monster group
+    this.monsters = this.physics.add.group();
   }
 
   spawnChest(chestObject) {
     const location = [chestObject.x * 2, chestObject.y * 2];
-    
     // Phaser will loop through chest array and look for inactive object
     // return the inactive game object
     // reuse game object
@@ -75,12 +77,32 @@ class GameScene extends Phaser.Scene {
       chest.setPosition(location[0], location[1]);
       chest.makeActive();
     }
-    
   }
 
-  spawnMonster(monster) {
-    // TODO: create monster
-    console.log('monster', monster);
+  spawnMonster(monsterObject) {
+    const location = [monsterObject.x * 2, monsterObject.y * 2];
+    let monster = this.monsters.getFirstDead();
+
+    if (!monster) {
+      monster = new Monster(
+        this,
+        location[0],
+        location[1],
+        'monsters',
+        monsterObject.frame,
+        monsterObject.id,
+        monsterObject.health,
+        monsterObject.maxHealth
+      );
+      this.monsters.add(monster);
+    } else {
+      monster.id = monsterObject.id;
+      monster.health = monsterObject.health;
+      // params: asset, frame of spritesheet
+      monster.setTexture['monsters', monsterObject.frame];
+      monster.setPosition(location[0], location[1]);
+      monster.makeActive();
+    }
   }
 
   // createWalls() {

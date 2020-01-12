@@ -9,6 +9,7 @@ class MonsterModel {
     this.gold = gold
     // spritesheet frame
     this.frame = frame;
+    this.health = health;
     this.maxHealth = health;
     // monster dps
     this.attack = attack;
