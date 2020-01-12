@@ -96,7 +96,7 @@ class GameScene extends Phaser.Scene {
 
   addCollisions() {
     // collide with blocked layer
-    this.physics.add.collider(this.player, this.blockedLayer);
+    this.physics.add.collider(this.player, this.map.blockedLayer);
     // overlap with chest / chest group
     this.physics.add.overlap(this.player, this.chests, this.collectChest, null, this);
   }
@@ -119,31 +119,7 @@ class GameScene extends Phaser.Scene {
   }
 
   createMap() {
-    // create the tile map
-    this.map = this.make.tilemap({ key: 'map' });
-    // add the tileset image to our map
-    // params: has to match image in bootscene, key, size, margin, space
-    this.tiles = this.map.addTilesetImage('background', 'background', 32, 32, 1, 2)
-    // create our background
-    // params: key, tiles, starting x, y
-    this.backgroundLayer = this.map.createStaticLayer('background', this.tiles, 0, 0);
-    // scale the layer to the size of player
-    this.backgroundLayer.setScale(2);
-
-    // create block layer
-    this.blockedLayer = this.map.createStaticLayer('blocked', this.tiles, 0, 0);
-    this.blockedLayer.setScale(2);
-    // setCollisionByExclusion takes array of tile indexes that game objects can collide with
-    // set array to -1 and phaser will check for collisions of all tiles in layer
-    this.blockedLayer.setCollisionByExclusion([-1]);
-
-    // update the world bounds
-    // default is bound of canvas
-    this.physics.world.bounds.width = this.map.widthInPixles * 2;
-    this.physics.world.bounds.height = this.map.heightInPixles * 2;
-
-    // limit camera to size of map
-    // remove black area as phaser is infinite in each direction
-    this.cameras.main.setBounds(0, 0, this.map.widthInPixles * 2, this.map.heightInPixles * 2);
+    // CREATE MAP
+    this.map = new Map(this, 'map', 'background', 'background', 'blocked');
   }
 }
