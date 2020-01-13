@@ -47,7 +47,7 @@ class PlayerContainer extends Phaser.GameObjects.Container {
     this.scene.physics.world.enable(this.weapon);
     this.add(this.weapon);
     // only show the weapon when moving
-    this.weapon.alpha = 1;
+    this.weapon.alpha = 0;
   }
 
   // update is not called automatically
@@ -76,15 +76,38 @@ class PlayerContainer extends Phaser.GameObjects.Container {
       this.weapon.setPosition(0, 40);
     }
 
-    if (this.playerAttacking) {
+    // JustDown will detect if the key was just down
+    if (Phaser.Input.Keyboard.JustDown(cursors.space) && !this.playerAttacking) {
+      this.weapon.alpha = 1;
+      this.playerAttacking = true;
+      // stop player attacking after 150 ms
+      this.scene.time.delayedCall(150, () => {
+        this.weapon.alpha = 0;
+        this.playerAttacking = false;
+        this.swordHit = false;
+      }, [], this);
+    }
 
+    if (this.playerAttacking) {
+      if (this.weapon.flipX) {
+        // rotate weapon counter clockwise
+        this.weapon.angle -= 10;
+      } else {
+        this.weapon.angle += 10;
+      }
     } else {
       if (this.currentDirection === Direction.DOWN) {
         this.weapon.setAngle(-270);
-      } else if (this.currentDirection === Direction.UP || this.currentDirection === Direction.LEFT) {
+      } else if (this.currentDirection === Direction.UP) {
         this.weapon.setAngle(-90);
       } else {
         this.weapon.setAngle(0);
+      }
+
+      this.weapon.flipX = false;
+      if (this.currentDirection === Direction.LEFT) {
+        // flipX tells Phaser to flip on x axis
+        this.weapon.flipX = true;
       }
     }
   }
