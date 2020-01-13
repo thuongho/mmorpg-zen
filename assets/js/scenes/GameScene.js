@@ -40,12 +40,12 @@ class GameScene extends Phaser.Scene {
     // ADD PHYSICS TO PLAYER
     // this.player = this.physics.add.image(32, 32, 'characters', 0);
     // set player inside the non blocked layer of the map
-    this.player = new Player(this, location[0] * 2, location[1] * 2, 'characters', 0);
+    this.player = new PlayerContainer(this, location[0] * 2, location[1] * 2, 'characters', 0);
     // zoom
-    this.player.setScale(2);
+    // this.player.setScale(2);
   
     // BOUNDARY
-    this.player.body.colliderWorldBounds = true;
+    // this.player.body.colliderWorldBounds = true;
     // deprecated code
     // this.player.body.setColliderWorldBounds(true);
   }
